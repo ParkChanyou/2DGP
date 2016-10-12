@@ -12,6 +12,6 @@ class Background:
         self.image.clip_draw(0, 0, 384, 512, 192, 768 + self.background_frame)
 
     def update(self):
-        self.background_frame -= 0.2
+        self.background_frame -= 0.1
         if self.background_frame <= -512:
             self.background_frame = 0
