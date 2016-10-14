@@ -8,8 +8,7 @@ import game_framework
 import title_state
 from background_map import Background
 from character import Character
-from bullet import CharacterBullet
-from bullet import MonsterBullet
+from bullet import *
 
 
 
@@ -60,16 +59,18 @@ def handle_events():
         if (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
             cBullets = CharacterBullet(character.x, character.y)
             character_bullet.append(cBullets)
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_a):
+            character.changelevel()
 
 
 def update():
-    hide_cursor()
+    show_cursor()
 
     background.update()
     character.update()
 
     for cbullet in character_bullet:
-        cbullet.update()
+        cbullet.update(character.level)
 
         if cbullet.y >= 550:
             character_bullet.remove(cbullet)
