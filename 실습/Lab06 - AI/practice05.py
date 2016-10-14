@@ -54,6 +54,12 @@ class Boy:
             self.state = self.RIGHT_RUN
             self.run_frames = 0
 
+    def handle_space(self):
+        if self.state == self.RIGHT_RUN:
+            self.state = self.LEFT_RUN
+        elif self.state == self.LEFT_RUN:
+            self.state = self.RIGHT_RUN
+
 
 
     handle_state = {
@@ -83,7 +89,7 @@ class Boy:
         self.image.clip_draw(self.frame * 100, self.state * 100, 100, 100, self.x, self.y)
 
 
-def handle_events():
+def handle_events(self):
     global running
     events = get_events()
     for event in events:
@@ -91,6 +97,19 @@ def handle_events():
             running = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+            if self.state == self.RIGHT_RUN:
+                self.state = self.LEFT_RUN
+            elif self.state == self.LEFT_RUN:
+                self.state = self.RIGHT_RUN
+            elif self.state == self.RIGHT_STAND:
+                self.state = self.RIGHT_RUN
+                self.run_frames = 0
+            elif self.state == self.LEFT_STAND:
+                self.state = self.LEFT_RUN
+                self.run_frames = 0
+
+
 
 
 def main():
@@ -104,7 +123,7 @@ def main():
     running = True
 
     while running:
-        handle_events()
+        handle_events(boy)
 
         boy.update()
 
