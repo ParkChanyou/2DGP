@@ -10,14 +10,17 @@ image = None
 def enter():
     global image
     global game_start_image
+    global grid
     image = load_image('etc/title.png')
     game_start_image = load_image('etc/game_start_button.png')
 
 
 def exit():
     global image
+    global game_start_image
+    global grid
     del(image)
-
+    del(game_start_image)
 
 def handle_events():
     events = get_events()
