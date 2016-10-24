@@ -34,6 +34,8 @@ def enter():
 def exit():
     global background, character, monsters, character_bullet, monster_bullet
     del(background)
+    del(character)
+    del(character_bullet)
 
 
 def pause():
