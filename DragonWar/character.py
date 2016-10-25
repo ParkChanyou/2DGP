@@ -16,6 +16,11 @@ class Character:
     def update(self):
         self.character_frame = (self.character_frame + 1) % 4
 
+        if self.leftkey == True:
+            self.x = max(0, self.x + (self.dir))
+        elif self.rightkey == True:
+            self.x = min(384, self.x + (self.dir))
+
     def draw(self):
         self.image.clip_draw(self.character_frame * 75, 0, 75, 75, self.x, self.y)
 
@@ -31,11 +36,6 @@ class Character:
             self.rightkey = True
         elif (event.type, event.key) == (SDL_KEYUP, SDLK_RIGHT):
             self.rightkey = False
-
-        if self.leftkey == True:
-            self.x += (self.dir * 5)
-        elif self.rightkey == True:
-            self.x += (self.dir * 5)
 
     def changelevel(self):
         print("%d", self.level)
