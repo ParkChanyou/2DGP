@@ -7,7 +7,8 @@ from pico2d import *
 import game_framework
 import title_state
 from background_map import Background
-from character import Character
+from character import DragonWarrior
+from monster import Dragon
 from bullet import *
 
 
@@ -16,25 +17,26 @@ name = "MainState"
 
 font = None
 background = None
-character = None
+dragonwarrior = None
 character_bullet = []
 monsters = []
 monster_bullet = []
 
 
-
+current_time = 0.0
 
 
 def enter():
-    global background, character, monsters
+    global background, dragonwarrior, monsters
     background = Background()
-    character = Character()
+    dragonwarrior = DragonWarrior()
+    monsters = Dragon()
 
 
 def exit():
-    global background, character, monsters, character_bullet, monster_bullet
+    global background, dragonwarrior, monsters, character_bullet, monster_bullet
     del(background)
-    del(character)
+    del(dragonwarrior)
     del(character_bullet)
 
 
@@ -56,23 +58,30 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_state(title_state)
         else:
-            character.handle_event(event)
+            dragonwarrior.handle_event(event)
 
         if (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-            cBullets = CharacterBullet(character.x, character.y)
+            cBullets = CharacterBullet(dragonwarrior.x, dragonwarrior.y)
             character_bullet.append(cBullets)
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_a):
-            character.changelevel()
+            dragonwarrior.changelevel()
 
 
 def update():
+    global monsters
+
     show_cursor()
 
+    frame_time = get_frame_time()
+
     background.update()
-    character.update()
+    dragonwarrior.update(frame_time)
+
+    #임시로 넣어본 몬스터
+    monsters.update(frame_time)
 
     for cbullet in character_bullet:
-        cbullet.update(character.level)
+        cbullet.update(dragonwarrior.level)
 
         if cbullet.y >= 550:
             character_bullet.remove(cbullet)
@@ -82,7 +91,8 @@ def draw():
     clear_canvas()
 
     background.draw()
-    character.draw()
+    dragonwarrior.draw()
+    monsters.draw()
 
     for cbullet in character_bullet:
         cbullet.draw()
@@ -90,6 +100,13 @@ def draw():
     update_canvas()
 
 
+def get_frame_time():
+
+    global current_time
+
+    frame_time = get_time() - current_time
+    current_time += frame_time
+    return frame_time
 
 
 

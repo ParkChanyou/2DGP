@@ -9,10 +9,11 @@ class CharacterBullet:
             CharacterBullet.image = load_image('bullet/bullet_1.png')
         self.x, self.y = x, y + 37
         self.damage = 10
+        self.dir = 1
 
 
     def update(self, level):
-        """
+
         if level == 1:
             CharacterBullet.image = load_image('bullet/bullet_1.png')
         if level == 2:
@@ -23,9 +24,9 @@ class CharacterBullet:
             CharacterBullet.image = load_image('bullet/bullet_4.png')
         if level == 5:
             CharacterBullet.image = load_image('bullet/bullet_5.png')
-        """
 
-        self.y += 1
+
+        self.y += self.dir
 
 
     def draw(self):
@@ -37,9 +38,11 @@ class MonsterBullet:
         if MonsterBullet.image == None:
             MonsterBullet.image = load_image('bullet/enemy_bullet_1.png')
         self.x, self.y = x, y + 26
+        self.damage = 10
+        self.dir = -1
 
     def update(self):
-        self.y -= 1
+        self.y += self.dir
 
     def draw(self):
         self.image.draw(self.x, self.y)
