@@ -3,8 +3,8 @@ import random
 from pico2d import *
 
 class Dragon:
-    PIXEL_PER_METER = (10.0 / 0.5)  # 10 pixel 0.5 m
-    RUN_SPEED_KMPH = 50.0  # Km / Hour
+    PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 0.3 m
+    RUN_SPEED_KMPH = 30.0  # Km / Hour
     RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
     RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
     RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -14,7 +14,7 @@ class Dragon:
     FRAMES_PER_ACTION = 4
 
     def __init__(self):
-        self.x,self.y= 100,70
+        self.x, self.y= 100, 500
         self.frame = 0
         self.total_frames = 0.0
         self.image= load_image("unit/monster_0.png")
@@ -28,7 +28,9 @@ class Dragon:
 
         self.y += (self.dir * distance)
 
-        if self.y <= -500:
-            self.y = 900
+        if self.y <= -150:
+            self.y = 700
+
+
     def draw(self):
         self.image.clip_draw(self.frame * 75, 0, 75, 75, self.x, self.y)
