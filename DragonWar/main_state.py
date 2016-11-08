@@ -30,7 +30,7 @@ def enter():
     global background, dragonwarrior, monsters
     background = Background()
     dragonwarrior = DragonWarrior()
-    monsters = Dragon()
+    monsters = create_monster_team()
 
 
 def exit():
@@ -77,14 +77,23 @@ def update():
     background.update()
     dragonwarrior.update(frame_time)
 
-    #임시로 넣어본 몬스터
-    monsters.update(frame_time)
+    for monster in monsters:
+        monster.update(frame_time)
+        if monster.y <= -50:
+            monsters = create_monster_team()
+        if collide(monster, dragonwarrior):
+            print("캐릭터와 몬스터 충돌")
+            #game_framework.quit()
 
     for cbullet in character_bullet:
         cbullet.update(dragonwarrior.level)
-
         if cbullet.y >= 550:
             character_bullet.remove(cbullet)
+        for monster in monsters:
+            if collide(monster, cbullet):
+                print("총알과 몬스터 충돌")
+                character_bullet.remove(cbullet)
+                monsters.remove(monster)
 
 
 def draw():
@@ -92,10 +101,15 @@ def draw():
 
     background.draw()
     dragonwarrior.draw()
-    monsters.draw()
+    dragonwarrior.draw_bb()
+
+    for monster in monsters:
+        monster.draw()
+        monster.draw_bb()
 
     for cbullet in character_bullet:
         cbullet.draw()
+        cbullet.draw_bb()
 
     update_canvas()
 
@@ -109,4 +123,43 @@ def get_frame_time():
     return frame_time
 
 
+def create_monster_team():
+    team = []
 
+    monster1 = Dragon()
+    monster1.set_pos(38.4*1, 900)
+    team.append(monster1)
+
+    monster2 = Dragon()
+    monster2.set_pos(38.4*3, 900)
+    team.append(monster2)
+
+    monster3 = Dragon()
+    monster3.set_pos(38.4*5, 900)
+    team.append(monster3)
+
+    monster4 = Dragon()
+    monster4.set_pos(38.4*7, 900)
+    team.append(monster4)
+
+    monster5 = Dragon()
+    monster5.set_pos(38.4*9, 900)
+    team.append(monster5)
+
+    return team
+
+
+def collide(a, b):
+    left_a, bottom_a, right_a, top_a = a.get_bb()
+    left_b, bottom_b, right_b, top_b = b.get_bb()
+
+    if left_a > right_b:
+        return False
+    if right_a < left_b:
+        return False
+    if top_a < bottom_b:
+        return False
+    if bottom_a > top_b:
+        return False
+
+    return True
