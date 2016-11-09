@@ -9,7 +9,7 @@ import title_state
 from background_map import Background
 from character import DragonWarrior
 from monster import Dragon
-from bullet import *
+from bullet import CharacterBullet, MonsterBullet
 
 
 
@@ -18,9 +18,9 @@ name = "MainState"
 font = None
 background = None
 dragonwarrior = None
-character_bullet = []
+character_bullets = []
 monsters = []
-monster_bullet = []
+monster_bullets = []
 
 
 current_time = 0.0
@@ -34,10 +34,10 @@ def enter():
 
 
 def exit():
-    global background, dragonwarrior, monsters, character_bullet, monster_bullet
+    global background, dragonwarrior, monsters, character_bullets, monster_bullets
     del(background)
     del(dragonwarrior)
-    del(character_bullet)
+    del(character_bullets)
 
 
 def pause():
@@ -49,7 +49,7 @@ def resume():
 
 
 def handle_events():
-    global character_bullet
+    global character_bullets
 
     events = get_events()
     for event in events:
@@ -62,7 +62,7 @@ def handle_events():
 
         if (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
             cBullets = CharacterBullet(dragonwarrior.x, dragonwarrior.y)
-            character_bullet.append(cBullets)
+            character_bullets.append(cBullets)
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_a):
             dragonwarrior.changelevel()
 
@@ -85,14 +85,16 @@ def update():
             print("캐릭터와 몬스터 충돌")
             #game_framework.quit()
 
-    for cbullet in character_bullet:
-        cbullet.update(dragonwarrior.level)
+    create_monster_bullet()
+
+    for cbullet in character_bullets:
+        cbullet.update(frame_time, dragonwarrior.level)
         if cbullet.y >= 550:
-            character_bullet.remove(cbullet)
+            character_bullets.remove(cbullet)
         for monster in monsters:
             if collide(monster, cbullet):
                 print("총알과 몬스터 충돌")
-                character_bullet.remove(cbullet)
+                character_bullets.remove(cbullet)
                 monsters.remove(monster)
 
 
@@ -107,7 +109,7 @@ def draw():
         monster.draw()
         monster.draw_bb()
 
-    for cbullet in character_bullet:
+    for cbullet in character_bullets:
         cbullet.draw()
         cbullet.draw_bb()
 
@@ -163,3 +165,7 @@ def collide(a, b):
         return False
 
     return True
+
+
+def create_monster_bullet():
+    pass
