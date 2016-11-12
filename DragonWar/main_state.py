@@ -77,6 +77,9 @@ def update():
     background.update()
     dragonwarrior.update(frame_time)
 
+    if len(monsters) == 0:
+        monsters = create_monster_team()
+
     for monster in monsters:
         monster.update(frame_time)
         if monster.y <= -50:
