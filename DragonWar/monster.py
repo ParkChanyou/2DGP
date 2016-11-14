@@ -19,6 +19,8 @@ class Dragon:
         self.total_frames = 0.0
         self.image= load_image("unit/monster_0.png")
         self.dir = -1
+        self.type = 1
+        self.hp = 10
 
 
     def update(self, frame_time):
@@ -39,6 +41,25 @@ class Dragon:
     def set_pos(self, x, y):
         self.x = x
         self.y = y
+
+    def set_type(self, type):
+        self.type = type;
+        if self.type == 1:
+            self.image = load_image("unit/monster_0.png")
+            self.hp = 10
+        elif self.type == 2:
+            self.image = load_image("unit/monster_1.png")
+            self.hp = 20
+        elif self.type == 3:
+            self.image = load_image("unit/monster_2.png")
+            self.hp = 30
+        elif self.type == 4:
+            self.image = load_image("unit/monster_3.png")
+            self.hp = 40
+
+    def set_damage(self, damage):
+        self.hp = self.hp - damage
+        return self.hp
 
     def get_bb(self):
         return self.x - 22, self.y - 25, self.x + 22, self.y + 25

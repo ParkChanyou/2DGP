@@ -4,7 +4,7 @@ from pico2d import *
 
 class DragonWarrior:
     PIXEL_PER_METER = (10.0 / 0.1)  # 10 pixel 0.1 m
-    RUN_SPEED_KMPH = 20.0  # Km / Hour
+    RUN_SPEED_KMPH = 10.0  # Km / Hour
     RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
     RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
     RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -55,6 +55,9 @@ class DragonWarrior:
         self.level += 1
         if self.level > 5:
             self.level = 1
+
+    def get_level(self):
+        return self.level
 
     def get_bb(self):
         return self.x - 30, self.y - 40, self.x + 30, self.y + 40

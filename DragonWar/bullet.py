@@ -24,20 +24,8 @@ class CharacterBullet:
         self.level = 1
 
 
-    def update(self, frame_time, level):
+    def update(self, frame_time):
         distance = CharacterBullet.RUN_SPEED_PPS * frame_time
-        self.level = level
-        if self.level == 1:
-            CharacterBullet.image = load_image('bullet/bullet_1.png')
-        if self.level == 2:
-            CharacterBullet.image = load_image('bullet/bullet_2.png')
-        if self.level == 3:
-            CharacterBullet.image = load_image('bullet/bullet_3.png')
-        if self.level == 4:
-            CharacterBullet.image = load_image('bullet/bullet_4.png')
-        if self.level == 5:
-            CharacterBullet.image = load_image('bullet/bullet_5.png')
-
         self.y += (self.dir * distance)
 
 
@@ -52,12 +40,33 @@ class CharacterBullet:
         if self.level == 3:
             return self.x - 35, self.y - 60, self.x + 35, self.y + 60
         if self.level == 4:
-            return self.x - 64, self.y - 60, self.x + 64, self.y + 60
+            return self.x - 35, self.y - 60, self.x + 35, self.y + 60
         if self.level == 5:
-            return self.x - 62, self.y - 62, self.x + 62, self.y + 62
+            return self.x - 35, self.y - 60, self.x + 35, self.y + 60
 
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
+
+    def get_damage(self):
+        return self.damage
+
+    def change_bullet(self, level):
+        self.level = level
+        if self.level == 1:
+            CharacterBullet.image = load_image('bullet/bullet_1.png')
+            self.damage = 10
+        if self.level == 2:
+            CharacterBullet.image = load_image('bullet/bullet_2.png')
+            self.damage = 15
+        if self.level == 3:
+            CharacterBullet.image = load_image('bullet/bullet_3.png')
+            self.damage = 20
+        if self.level == 4:
+            CharacterBullet.image = load_image('bullet/bullet_4_1.png')
+            self.damage = 30
+        if self.level == 5:
+            CharacterBullet.image = load_image('bullet/bullet_5_1.png')
+            self.damage = 40
 
 
 class MonsterBullet:

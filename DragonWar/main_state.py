@@ -6,10 +6,12 @@ from pico2d import *
 
 import game_framework
 import title_state
+import ranking_state
 from background_map import Background
 from character import DragonWarrior
 from monster import Dragon
 from bullet import CharacterBullet, MonsterBullet
+from meteo import Meteo
 
 
 
@@ -21,6 +23,7 @@ dragonwarrior = None
 character_bullets = []
 monsters = []
 monster_bullets = []
+meteos = []
 
 
 current_time = 0.0
@@ -69,13 +72,24 @@ def handle_events():
 
 def update():
     global monsters
+    global current_time, meteos
 
     show_cursor()
 
     frame_time = get_frame_time()
 
-    background.update()
+    background.update(frame_time)
     dragonwarrior.update(frame_time)
+
+    degree = background.degree()
+    print(degree)
+
+    if current_time >= 15 and current_time <= 15.1:
+        meteo = Meteo(dragonwarrior.x, dragonwarrior.y)
+        meteos.append(meteo)
+
+    for meteo in meteos:
+        meteo.update(frame_time)
 
     if len(monsters) == 0:
         monsters = create_monster_team()
@@ -86,19 +100,20 @@ def update():
             monsters = create_monster_team()
         if collide(monster, dragonwarrior):
             print("캐릭터와 몬스터 충돌")
-            #game_framework.quit()
 
     create_monster_bullet()
 
     for cbullet in character_bullets:
-        cbullet.update(frame_time, dragonwarrior.level)
+        cbullet.update(frame_time)
+        cbullet.change_bullet(dragonwarrior.get_level())
         if cbullet.y >= 550:
             character_bullets.remove(cbullet)
         for monster in monsters:
             if collide(monster, cbullet):
-                print("총알과 몬스터 충돌")
+                #print("총알과 몬스터 충돌")
+                if monster.set_damage(cbullet.get_damage()) <= 0:
+                    monsters.remove(monster)
                 character_bullets.remove(cbullet)
-                monsters.remove(monster)
 
 
 def draw():
@@ -115,6 +130,9 @@ def draw():
     for cbullet in character_bullets:
         cbullet.draw()
         cbullet.draw_bb()
+
+    for meteo in meteos:
+        meteo.draw()
 
     update_canvas()
 
@@ -133,22 +151,27 @@ def create_monster_team():
 
     monster1 = Dragon()
     monster1.set_pos(38.4*1, 900)
+    monster1.set_type(random.randint(1, 4))
     team.append(monster1)
 
     monster2 = Dragon()
     monster2.set_pos(38.4*3, 900)
+    monster2.set_type(random.randint(1, 4))
     team.append(monster2)
 
     monster3 = Dragon()
     monster3.set_pos(38.4*5, 900)
+    monster3.set_type(random.randint(1, 4))
     team.append(monster3)
 
     monster4 = Dragon()
     monster4.set_pos(38.4*7, 900)
+    monster4.set_type(random.randint(1, 4))
     team.append(monster4)
 
     monster5 = Dragon()
     monster5.set_pos(38.4*9, 900)
+    monster5.set_type(random.randint(1, 4))
     team.append(monster5)
 
     return team
