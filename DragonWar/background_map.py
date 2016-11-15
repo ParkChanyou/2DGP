@@ -21,10 +21,14 @@ class Background:
 
     def update(self, frame_time):
         distance = Background.RUN_SPEED_PPS * frame_time
-        self.background_frame -= distance
-        self.last_pos += distance
+
         degree = self.last_pos - self.first_pos
         degree = degree / 10
+
+        if degree < 1792:
+            self.background_frame -= distance
+            self.last_pos += distance
+
         if degree >= 768 and degree < 1536:
             self.image = load_image('background/background_2.png')
         elif degree >= 1536:

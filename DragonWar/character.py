@@ -23,6 +23,7 @@ class DragonWarrior:
         self.rightkey = False
         self.hp = 100
         self.level = 1
+        self.score = 0
 
     def update(self, frame_time):
         distance = DragonWarrior.RUN_SPEED_PPS * frame_time
@@ -58,6 +59,15 @@ class DragonWarrior:
 
     def get_level(self):
         return self.level
+
+    def set_level(self, level):
+        self.level = level
+
+    def get_score(self):
+        return self.score
+
+    def set_score(self, score):
+        self.score = score
 
     def get_bb(self):
         return self.x - 30, self.y - 40, self.x + 30, self.y + 40

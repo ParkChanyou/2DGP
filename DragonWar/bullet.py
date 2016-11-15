@@ -101,3 +101,46 @@ class MonsterBullet:
 
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
+
+
+class BossBullet:
+    PIXEL_PER_METER = (10.0 / 1)  # 10 pixel 2 m
+    RUN_SPEED_KMPH = 200.0  # Km / Hour
+    RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+    RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+    RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+    TIME_PER_ACTION = 0.3
+    ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+    FRAMES_PER_ACTION = 4
+
+    image = None
+
+    def __init__(self, x, y):
+        if BossBullet.image == None:
+            BossBullet.image = load_image('bullet/enemy_bullet_1.png')
+        self.x, self.y = x, y - 26
+        self.damage = 10
+        self.dir = -1
+        self.pattern = 1
+
+    def update(self, frame_time):
+        distance = BossBullet.RUN_SPEED_PPS * frame_time
+        if self.pattern == 1:
+            self.y += (self.dir * distance)
+
+    def draw(self):
+        self.image.draw(self.x, self.y)
+
+    def get_bb(self):
+        return self.x - 26, self.y - 26, self.x + 26, self.y + 26
+
+    def draw_bb(self):
+        draw_rectangle(*self.get_bb())
+
+    def pattern(self, pattern):
+        self.pattern = pattern
+        if self.pattern == 1:
+            BossBullet.image = load_image('bullet/enemy_bullet_1.png')
+        elif self.pattern == 2:
+            BossBullet.image = load_image('bullet/enemy_bullet_2.png')

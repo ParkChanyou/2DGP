@@ -9,9 +9,10 @@ import title_state
 import ranking_state
 from background_map import Background
 from character import DragonWarrior
-from monster import Dragon
+from monster import Dragon, BossDragon
 from bullet import CharacterBullet, MonsterBullet
 from meteo import Meteo
+from item import Items
 
 
 
@@ -24,16 +25,24 @@ character_bullets = []
 monsters = []
 monster_bullets = []
 meteos = []
+bossmonsters = []
+items = []
 
 
 current_time = 0.0
 
+boss_degree = 1792
+
 
 def enter():
-    global background, dragonwarrior, monsters
+    global font, background, dragonwarrior, monsters, bossmonsters
+    font = load_font('etc/barun.ttf')
     background = Background()
     dragonwarrior = DragonWarrior()
     monsters = create_monster_team()
+    bossmonster = BossDragon()
+    bossmonsters.append(bossmonster)
+
 
 
 def exit():
@@ -71,8 +80,9 @@ def handle_events():
 
 
 def update():
-    global monsters
+    global monsters, character_bullets
     global current_time, meteos
+    global boss_degree
 
     show_cursor()
 
@@ -84,6 +94,10 @@ def update():
     degree = background.degree()
     print(degree)
 
+    if degree >= boss_degree:
+        for bossmonster in bossmonsters:
+            bossmonster.update(frame_time)
+
     if current_time >= 15 and current_time <= 15.1:
         meteo = Meteo(dragonwarrior.x, dragonwarrior.y)
         meteos.append(meteo)
@@ -91,17 +105,16 @@ def update():
     for meteo in meteos:
         meteo.update(frame_time)
 
-    if len(monsters) == 0:
-        monsters = create_monster_team()
-
-    for monster in monsters:
-        monster.update(frame_time)
-        if monster.y <= -50:
+    if degree < boss_degree:
+        if len(monsters) == 0:
             monsters = create_monster_team()
-        if collide(monster, dragonwarrior):
-            print("캐릭터와 몬스터 충돌")
-
-    create_monster_bullet()
+        for monster in monsters:
+            monster.update(frame_time)
+            if monster.y <= -50:
+                monsters = create_monster_team()
+            if collide(monster, dragonwarrior):
+                print("캐릭터와 몬스터 충돌")
+        #create_monster_bullet()
 
     for cbullet in character_bullets:
         cbullet.update(frame_time)
@@ -113,7 +126,34 @@ def update():
                 #print("총알과 몬스터 충돌")
                 if monster.set_damage(cbullet.get_damage()) <= 0:
                     monsters.remove(monster)
-                character_bullets.remove(cbullet)
+                    score_increase(monster.type)
+                    randint = random.randint(0, 100)
+                    if randint >= 0 and randint <= 70:
+                        item = Items(monster.x, monster.y, 1)
+                    elif randint > 70 and randint <= 100:
+                        item = Items(monster.x, monster.y, 2)
+                    items.append(item)
+                if character_bullets.count(cbullet) >= 1:
+                    character_bullets.remove(cbullet)
+        if degree >= boss_degree:
+            for bossmonster in bossmonsters:
+                if collide(bossmonster, cbullet):
+                    if bossmonster.set_damage(cbullet.get_damage()) <= 0:
+                        bossmonsters.remove(bossmonster)
+
+    for item in items:
+        item.update(frame_time)
+        if item.y <= -50:
+            items.remove(item)
+        if collide(item, dragonwarrior):
+            if item.get_type() == 1:
+                score_increase(10)
+            elif item.get_type() == 2:
+                level = dragonwarrior.get_level()
+                if level < 5:
+                    level += 1
+                dragonwarrior.set_level(level)
+            items.remove(item)
 
 
 def draw():
@@ -123,9 +163,20 @@ def draw():
     dragonwarrior.draw()
     dragonwarrior.draw_bb()
 
+    degree = background.degree()
+
+    font.draw(270, 480, 'Score: %d' % dragonwarrior.get_score())
+    font.draw(250, 450, 'Degree: %4.1d' % degree)
+
+    if degree >= boss_degree:
+        for bossmonster in bossmonsters:
+            bossmonster.draw()
+            bossmonster.draw_bb()
+
     for monster in monsters:
-        monster.draw()
-        monster.draw_bb()
+        if degree < boss_degree:
+            monster.draw()
+            monster.draw_bb()
 
     for cbullet in character_bullets:
         cbullet.draw()
@@ -133,6 +184,9 @@ def draw():
 
     for meteo in meteos:
         meteo.draw()
+
+    for item in items:
+        item.draw()
 
     update_canvas()
 
@@ -150,27 +204,27 @@ def create_monster_team():
     team = []
 
     monster1 = Dragon()
-    monster1.set_pos(38.4*1, 900)
+    monster1.set_pos(38.4*1, 700)
     monster1.set_type(random.randint(1, 4))
     team.append(monster1)
 
     monster2 = Dragon()
-    monster2.set_pos(38.4*3, 900)
+    monster2.set_pos(38.4*3, 700)
     monster2.set_type(random.randint(1, 4))
     team.append(monster2)
 
     monster3 = Dragon()
-    monster3.set_pos(38.4*5, 900)
+    monster3.set_pos(38.4*5, 700)
     monster3.set_type(random.randint(1, 4))
     team.append(monster3)
 
     monster4 = Dragon()
-    monster4.set_pos(38.4*7, 900)
+    monster4.set_pos(38.4*7, 700)
     monster4.set_type(random.randint(1, 4))
     team.append(monster4)
 
     monster5 = Dragon()
-    monster5.set_pos(38.4*9, 900)
+    monster5.set_pos(38.4*9, 700)
     monster5.set_type(random.randint(1, 4))
     team.append(monster5)
 
@@ -195,3 +249,8 @@ def collide(a, b):
 
 def create_monster_bullet():
     pass
+
+def score_increase(score):
+    scores = dragonwarrior.get_score()
+    scores += score
+    dragonwarrior.set_score(scores)
