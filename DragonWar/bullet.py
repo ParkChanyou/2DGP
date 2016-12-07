@@ -47,9 +47,6 @@ class CharacterBullet:
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
 
-    def get_damage(self):
-        return self.damage
-
     def change_bullet(self, level):
         self.level = level
         if self.level == 1:

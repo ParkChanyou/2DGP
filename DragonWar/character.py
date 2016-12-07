@@ -3,6 +3,8 @@ import random
 from pico2d import *
 
 class DragonWarrior:
+    DW_STANDING, DW_MOVING_LEFT, DW_MOVING_RIGHT = 0, 1, 2
+
     PIXEL_PER_METER = (10.0 / 0.1)  # 10 pixel 0.1 m
     RUN_SPEED_KMPH = 10.0  # Km / Hour
     RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
@@ -19,8 +21,7 @@ class DragonWarrior:
         self.total_frames = 0.0
         self.image = load_image('unit/character.png')
         self.dir = 1
-        self.leftkey = False
-        self.rightkey = False
+        self.state = self.DW_STANDING
         self.hp = 100
         self.level = 1
         self.score = 0
@@ -30,9 +31,9 @@ class DragonWarrior:
         self.total_frames += DragonWarrior.FRAMES_PER_ACTION * DragonWarrior.ACTION_PER_TIME * frame_time
         self.character_frame = int(self.total_frames) % 4
 
-        if self.leftkey == True:
+        if self.state == self.DW_MOVING_LEFT:
             self.x = max(0, self.x + (self.dir * distance))
-        elif self.rightkey == True:
+        elif self.state == self.DW_MOVING_RIGHT:
             self.x = min(384, self.x + (self.dir * distance))
 
     def draw(self):
@@ -41,15 +42,17 @@ class DragonWarrior:
     def handle_event(self, event):
         if (event.type, event.key) == (SDL_KEYDOWN, SDLK_LEFT):
             self.dir = -1
-            self.leftkey = True
+            self.state = self.DW_MOVING_LEFT
         elif (event.type, event.key) == (SDL_KEYUP, SDLK_LEFT):
-            self.dir = 1
-            self.leftkey = False
+            self.dir = 0
+            self.state = self.DW_STANDING
 
         if (event.type, event.key) == (SDL_KEYDOWN, SDLK_RIGHT):
-            self.rightkey = True
+            self.dir = 1
+            self.state = self.DW_MOVING_RIGHT
         elif (event.type, event.key) == (SDL_KEYUP, SDLK_RIGHT):
-            self.rightkey = False
+            self.dir = 0
+            self.state = self.DW_STANDING
 
     def changelevel(self):
         print("불렛 레벨 : %d" %(self.level))
@@ -57,14 +60,8 @@ class DragonWarrior:
         if self.level > 5:
             self.level = 1
 
-    def get_level(self):
-        return self.level
-
     def set_level(self, level):
         self.level = level
-
-    def get_score(self):
-        return self.score
 
     def set_score(self, score):
         self.score = score

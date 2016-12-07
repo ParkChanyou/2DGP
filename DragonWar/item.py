@@ -46,6 +46,3 @@ class Items:
 
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
-
-    def get_type(self):
-        return self.type

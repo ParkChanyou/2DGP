@@ -118,13 +118,13 @@ def update():
 
     for cbullet in character_bullets:
         cbullet.update(frame_time)
-        cbullet.change_bullet(dragonwarrior.get_level())
+        cbullet.change_bullet(dragonwarrior.level)
         if cbullet.y >= 550:
             character_bullets.remove(cbullet)
         for monster in monsters:
             if collide(monster, cbullet):
                 #print("총알과 몬스터 충돌")
-                if monster.set_damage(cbullet.get_damage()) <= 0:
+                if monster.set_damage(cbullet.damage) <= 0:
                     monsters.remove(monster)
                     score_increase(monster.type)
                     randint = random.randint(0, 100)
@@ -138,7 +138,7 @@ def update():
         if degree >= boss_degree:
             for bossmonster in bossmonsters:
                 if collide(bossmonster, cbullet):
-                    if bossmonster.set_damage(cbullet.get_damage()) <= 0:
+                    if bossmonster.set_damage(cbullet.damage) <= 0:
                         bossmonsters.remove(bossmonster)
 
     for item in items:
@@ -146,10 +146,10 @@ def update():
         if item.y <= -50:
             items.remove(item)
         if collide(item, dragonwarrior):
-            if item.get_type() == 1:
+            if item.type == 1:
                 score_increase(10)
-            elif item.get_type() == 2:
-                level = dragonwarrior.get_level()
+            elif item.type == 2:
+                level = dragonwarrior.level
                 if level < 5:
                     level += 1
                 dragonwarrior.set_level(level)
@@ -165,7 +165,7 @@ def draw():
 
     degree = background.degree()
 
-    font.draw(270, 480, 'Score: %d' % dragonwarrior.get_score())
+    font.draw(270, 480, 'Score: %d' % dragonwarrior.score)
     font.draw(250, 450, 'Degree: %4.1d' % degree)
 
     if degree >= boss_degree:
@@ -251,6 +251,6 @@ def create_monster_bullet():
     pass
 
 def score_increase(score):
-    scores = dragonwarrior.get_score()
+    scores = dragonwarrior.score
     scores += score
     dragonwarrior.set_score(scores)
