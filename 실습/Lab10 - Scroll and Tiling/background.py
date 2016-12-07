@@ -14,23 +14,37 @@ class Background:
     def __init__(self, w, h):
         self.image = load_image('background.png') # 960x272
         self.speed = 0
+        self.upspeed = 0
         self.left = 0
+        self.up = 0
         self.screen_width = w
         self.screen_height = h
 
     def draw(self):
-        pass
+        x = int(self.left)
+        y = int(self.up)
+        w = min(self.image.w - x, self.screen_width)
+        h = min(self.image.h - y, self.screen_height)
+        self.image.clip_draw_to_origin(x, 0, w, self.screen_height, 0, 0)
+        self.image.clip_draw_to_origin(0, 0, self.screen_width-w, self.screen_height, w, 0)
+        self.image.clip_draw_to_origin(x, y, w, h, 0, 0)
+        self.image.clip_draw_to_origin(0, 0, self.screen_width-w, self.screen_height-h, w, h)
 
     def update(self, frame_time):
-        pass
+        self.left = (self.left + frame_time * self.speed) % self.image.w
+        self.up = (self.up - frame_time * self.upspeed) % self.image.h
 
     def handle_event(self, event):
         if event.type == SDL_KEYDOWN:
             if event.key == SDLK_LEFT: self.speed -= Background.SCROLL_SPEED_PPS
             elif event.key == SDLK_RIGHT: self.speed += Background.SCROLL_SPEED_PPS
+            elif event.key == SDLK_UP: self.upspeed -= Background.SCROLL_SPEED_PPS
+            elif event.key == SDLK_DOWN: self.upspeed += Background.SCROLL_SPEED_PPS
         if event.type == SDL_KEYUP:
             if event.key == SDLK_LEFT: self.speed += Background.SCROLL_SPEED_PPS
             elif event.key == SDLK_RIGHT: self.speed -= Background.SCROLL_SPEED_PPS
+            elif event.key == SDLK_UP: self.upspeed += Background.SCROLL_SPEED_PPS
+            elif event.key == SDLK_DOWN: self.upspeed -= Background.SCROLL_SPEED_PPS
 
 
 class TileBackground:
@@ -40,23 +54,35 @@ class TileBackground:
     def __init__(self, width, height):
         self.tile_map = load_tile_map('field.json')
         self.speed = 0
+        self.upspeed = 0
         self.left = 0
+        self.up = 0
         self.width = width
         self.height = height
 
     def draw(self):
-        pass
+        x = self.left
+        y = self.up
+        w = min(self.tile_map.map_width - x, self.width)
+        h = min(self.tile_map.map_height - y, self.height)
+        self.tile_map.clip_draw_to_origin(x, y, w, h, 0, 0)
+        self.tile_map.clip_draw_to_origin(0, 0, self.width - w, self.height - h, w, h)
 
     def update(self, frame_time):
-        pass
+        self.left = (self.left + self.speed) % self.tile_map.map_width
+        self.up = (self.up + self.upspeed) % self.tile_map.map_height
 
     def handle_event(self, event):
         if event.type == SDL_KEYDOWN:
             if event.key == SDLK_LEFT: self.speed -= TileBackground.SCROLL_SPEED_PPS
             elif event.key == SDLK_RIGHT: self.speed += TileBackground.SCROLL_SPEED_PPS
+            elif event.key == SDLK_UP: self.upspeed -= TileBackground.SCROLL_SPEED_PPS
+            elif event.key == SDLK_DOWN: self.upspeed += TileBackground.SCROLL_SPEED_PPS
         if event.type == SDL_KEYUP:
             if event.key == SDLK_LEFT: self.speed += TileBackground.SCROLL_SPEED_PPS
             elif event.key == SDLK_RIGHT: self.speed -= TileBackground.SCROLL_SPEED_PPS
+            elif event.key == SDLK_UP: self.upspeed += TileBackground.SCROLL_SPEED_PPS
+            elif event.key == SDLK_DOWN: self.upspeed -= TileBackground.SCROLL_SPEED_PPS
 
 
 
