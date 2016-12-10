@@ -10,7 +10,7 @@ import ranking_state
 from background_map import Background
 from character import DragonWarrior
 from monster import Dragon, BossDragon
-from bullet import CharacterBullet, MonsterBullet
+from bullet import CharacterBullet
 from meteo import Meteo
 from item import Items
 
@@ -47,9 +47,21 @@ def enter():
 
 def exit():
     global background, dragonwarrior, monsters, character_bullets, monster_bullets
-    del(background)
-    del(dragonwarrior)
-    del(character_bullets)
+
+    f = open('ranking_data.txt', 'r')
+    ranking_data = json.load(f)
+    f.close()
+
+    ranking_data.append({'Score':dragonwarrior.score, 'Degree':background.degree()})
+
+    f = open('ranking_data.txt', 'w')
+    json.dump(ranking_data, f)
+    f.close()
+
+    #del(background)
+    #del(dragonwarrior)
+    #del(character_bullets)
+    #del(monsters)
 
 
 def pause():
@@ -69,6 +81,8 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_state(title_state)
+        elif dragonwarrior.die == True:
+            game_framework.change_state(ranking_state)
         else:
             dragonwarrior.handle_event(event)
 
@@ -114,6 +128,8 @@ def update():
                 monsters = create_monster_team()
             if collide(monster, dragonwarrior):
                 print("캐릭터와 몬스터 충돌")
+                dragonwarrior.die = True;
+
         #create_monster_bullet()
 
     for cbullet in character_bullets:

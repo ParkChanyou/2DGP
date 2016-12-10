@@ -65,7 +65,7 @@ class CharacterBullet:
             CharacterBullet.image = load_image('bullet/bullet_5_1.png')
             self.damage = 40
 
-
+"""
 class MonsterBullet:
     PIXEL_PER_METER = (10.0 / 1)  # 10 pixel 2 m
     RUN_SPEED_KMPH = 200.0  # Km / Hour
@@ -141,3 +141,4 @@ class BossBullet:
             BossBullet.image = load_image('bullet/enemy_bullet_1.png')
         elif self.pattern == 2:
             BossBullet.image = load_image('bullet/enemy_bullet_2.png')
+"""

@@ -25,6 +25,7 @@ class DragonWarrior:
         self.hp = 100
         self.level = 1
         self.score = 0
+        self.die = False
 
     def update(self, frame_time):
         distance = DragonWarrior.RUN_SPEED_PPS * frame_time
