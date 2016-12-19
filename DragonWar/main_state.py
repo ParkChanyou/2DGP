@@ -9,7 +9,7 @@ import title_state
 import ranking_state
 from background_map import Background
 from character import DragonWarrior
-from monster import Dragon, BossDragon
+from monster import Dragon
 from bullet import CharacterBullet
 from meteo import Meteo
 from item import Items
@@ -25,7 +25,6 @@ character_bullets = []
 monsters = []
 monster_bullets = []
 meteos = []
-bossmonsters = []
 items = []
 
 
@@ -35,13 +34,11 @@ boss_degree = 1792
 
 
 def enter():
-    global font, background, dragonwarrior, monsters, bossmonsters
+    global font, background, dragonwarrior, monsters
     font = load_font('etc/barun.ttf')
     background = Background()
     dragonwarrior = DragonWarrior()
     monsters = create_monster_team()
-    bossmonster = BossDragon()
-    bossmonsters.append(bossmonster)
 
 
 
@@ -108,10 +105,6 @@ def update():
     degree = background.degree()
     print(degree)
 
-    if degree >= boss_degree:
-        for bossmonster in bossmonsters:
-            bossmonster.update(frame_time)
-
     if current_time >= 15 and current_time <= 15.1:
         meteo = Meteo(dragonwarrior.x, dragonwarrior.y)
         meteos.append(meteo)
@@ -129,8 +122,6 @@ def update():
             if collide(monster, dragonwarrior):
                 print("캐릭터와 몬스터 충돌")
                 dragonwarrior.die = True;
-
-        #create_monster_bullet()
 
     for cbullet in character_bullets:
         cbullet.update(frame_time)
@@ -151,11 +142,6 @@ def update():
                     items.append(item)
                 if character_bullets.count(cbullet) >= 1:
                     character_bullets.remove(cbullet)
-        if degree >= boss_degree:
-            for bossmonster in bossmonsters:
-                if collide(bossmonster, cbullet):
-                    if bossmonster.set_damage(cbullet.damage) <= 0:
-                        bossmonsters.remove(bossmonster)
 
     for item in items:
         item.update(frame_time)
@@ -177,26 +163,21 @@ def draw():
 
     background.draw()
     dragonwarrior.draw()
-    dragonwarrior.draw_bb()
+    #dragonwarrior.draw_bb()
 
     degree = background.degree()
 
     font.draw(270, 480, 'Score: %d' % dragonwarrior.score)
     font.draw(250, 450, 'Degree: %4.1d' % degree)
 
-    if degree >= boss_degree:
-        for bossmonster in bossmonsters:
-            bossmonster.draw()
-            bossmonster.draw_bb()
-
     for monster in monsters:
         if degree < boss_degree:
             monster.draw()
-            monster.draw_bb()
+            #monster.draw_bb()
 
     for cbullet in character_bullets:
         cbullet.draw()
-        cbullet.draw_bb()
+        #cbullet.draw_bb()
 
     for meteo in meteos:
         meteo.draw()
